@@ -3,87 +3,104 @@
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
-<div class="row">
-    <div class="col-auto d-flex">
-        <a style="color: #8a1bb6; border-color: transparent; cursor: pointer;" onclick="location.reload()">
-            <i class="bi bi-arrow-clockwise" style="font-size: 32px" data-bs-toggle="tooltip" data-bs-placement="bottom" data-bs-original-title="Actualizar vales"></i>
-        </a>
+<div class="space-y-6">
+    <!-- Header Section -->
+    <div class="bg-gradient-to-r from-red-primary to-red-secondary rounded-xl p-6 text-white shadow-lg">
+        <div class="flex items-center justify-between">
+            <div class="flex items-center space-x-4">
+                <button onclick="location.reload()"
+                        class="bg-white bg-opacity-20 hover:bg-opacity-30 p-3 rounded-lg transition-all duration-300 backdrop-blur-sm">
+                    <i class="bi bi-arrow-clockwise text-2xl"></i>
+                </button>
+                <div>
+                    <h2 class="text-3xl font-bold mb-1">Gestión de Vales</h2>
+                    <p class="text-red-100">Administre todas las solicitudes del sistema</p>
+                </div>
+            </div>
+            <button class="bg-white bg-opacity-20 hover:bg-opacity-30 p-3 rounded-lg transition-all duration-300 backdrop-blur-sm"
+                    data-bs-toggle="collapse" href="#filter" role="button" aria-expanded="false" aria-controls="filter">
+                <i id="filterIcon" class="bi bi-filter text-2xl"></i>
+            </button>
+        </div>
     </div>
-    <div class="col">
-        <h2 style="text-align: center;">Todos los vales</h2>
-    </div>
-    <div class="col-auto d-flex">
-        <a style="color:  #85929e; border-color: transparent; cursor: pointer;" data-bs-toggle="collapse" href="#filter" role="button" aria-expanded="false" aria-controls="filter">
-            <i id="filterIcon" class="bi bi-filter" style="font-size: 32px" data-bs-toggle="tooltip" data-bs-placement="bottom" data-bs-original-title="Mostrar filtros"></i>
-        </a>
-    </div>
-</div>
-<hr />
-<br />
-<div class="container-fluid flex-fill">
-    <div class="row justify-content-between">
-        <div class="col-9 flex-fill">
+
+    <div class="grid grid-cols-1 xl:grid-cols-4 gap-6">
+        <!-- Main Content -->
+        <div class="xl:col-span-3 space-y-6">
             <div id="Body">@Html.Raw(TempData["Message_Voucher"])</div>
             <div id="partialViewContainer"></div>
         </div>
-        <div class="collapse col-3" id="filter">
-            <div style="background-color:  #eaecee; border: solid 2px #d5d8dc;">
-                <ol class="list-group list-group-flush">
-                    <li class="list-group-item align-items-start">
-                        <h3 style="text-align: center;">Filtros</h3>
-                    </li>
-                    <li class="list-group-item d-flex justify-content-between align-items-start">
-                        <div class="ms-2 me-auto">
-                            <div class="fw-bold">Folio</div>
-                            <input id="txtVouchNum" type="text" class="form-control">
+
+        <!-- Filters Sidebar -->
+        <div class="xl:col-span-1">
+            <div class="collapse xl:show" id="filter">
+                <div class="bg-white rounded-xl shadow-lg border border-gray-200 p-6 sticky top-6">
+                    <div class="space-y-6">
+                        <!-- Header -->
+                        <div class="text-center border-b border-gray-200 pb-4">
+                            <h3 class="text-xl font-bold text-gray-900 flex items-center justify-center space-x-2">
+                                <i class="bi bi-funnel text-red-primary"></i>
+                                <span>Filtros</span>
+                            </h3>
                         </div>
-                    </li>
-                    <li class="list-group-item d-flex justify-content-between align-items-start">
-                        <div class="ms-2 me-auto">
-                            <div class="fw-bold">Estatus</div>
-                            <div class="form-check">
-                                <input id="status2" name="chbxRqStatus" class="form-check-input" type="checkbox" value="0" checked>
-                                <label class="form-check-label" for="flexCheckChecked">
-                                    Pendientes
-                                </label>
+
+                        <!-- Folio Filter -->
+                        <div class="space-y-2">
+                            <label class="block text-sm font-semibold text-gray-700">Folio</label>
+                            <div class="relative">
+                                <input id="txtVouchNum" type="text"
+                                       class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-red-primary focus:border-red-primary transition-colors pl-10"
+                                       placeholder="Número de folio">
+                                <i class="bi bi-hash absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400"></i>
                             </div>
-                            <div class="form-check">
-                                <input id="status1" name="chbxRqStatus" class="form-check-input" type="checkbox" value="1">
-                                <label class="form-check-label" for="flexCheckDefault">
-                                    Revisadas
-                                </label>
-                            </div>
-                            <div class="form-check">
-                                <input id="status3" class="form-check-input" type="checkbox" value="1">
-                                <label class="form-check-label" for="flexCheckDefault">
-                                    Canceladas
-                                </label>
-                            </div>
-                            @if (!User.IsInRole("Operacional") && !User.IsInRole("CentroCosto"))
-                            {
-                                string txtA = User.IsInRole("AlmacenMP") || User.IsInRole("Administrador") ? "Cerradas" : "Impresas";
-                                string txtB = User.IsInRole("AlmacenMP") || User.IsInRole("Administrador") ? "Sin cerrar" : "Sin imprimir";
-                                <div class="form-check">
-                                    <input id="pickedUp1" class="form-check-input" type="checkbox" name="chbxPickedUp" value="1">
-                                    <label class="form-check-label" for="flexCheckDefault">
-                                        @txtA
-                                    </label>
-                                </div>
-                                <div class="form-check">
-                                    <input id="pickedUp2" class="form-check-input" type="checkbox" name="chbxPickedUp" value="0">
-                                    <label class="form-check-label" for="flexCheckDefault">
-                                        @txtB
-                                    </label>
-                                </div>
-                            }
                         </div>
-                    </li>
-                    <li class="list-group-item d-flex justify-content-between align-items-start">
-                        <div class="ms-2 me-auto">
-                            <div class="fw-bold">Fecha</div>
-                            <div class="row justify-content-between">
-                                <div class="col">
-                                    <select id="cmbMonth" class="form-control">
+
+                        <!-- Status Filter -->
+                        <div class="space-y-3">
+                            <label class="block text-sm font-semibold text-gray-700">Estatus</label>
+                            <div class="space-y-2">
+                                <label class="flex items-center space-x-3 cursor-pointer">
+                                    <input id="status2" name="chbxRqStatus" class="w-4 h-4 text-red-primary border-gray-300 rounded focus:ring-red-primary"
+                                           type="checkbox" value="0" checked>
+                                    <span class="text-sm text-gray-700">Pendientes</span>
+                                    <span class="bg-yellow-100 text-yellow-800 text-xs px-2 py-1 rounded-full">Nuevo</span>
+                                </label>
+                                <label class="flex items-center space-x-3 cursor-pointer">
+                                    <input id="status1" name="chbxRqStatus" class="w-4 h-4 text-red-primary border-gray-300 rounded focus:ring-red-primary"
+                                           type="checkbox" value="1">
+                                    <span class="text-sm text-gray-700">Revisadas</span>
+                                    <span class="bg-green-100 text-green-800 text-xs px-2 py-1 rounded-full">OK</span>
+                                </label>
+                                <label class="flex items-center space-x-3 cursor-pointer">
+                                    <input id="status3" class="w-4 h-4 text-red-primary border-gray-300 rounded focus:ring-red-primary"
+                                           type="checkbox" value="1">
+                                    <span class="text-sm text-gray-700">Canceladas</span>
+                                    <span class="bg-red-100 text-red-800 text-xs px-2 py-1 rounded-full">X</span>
+                                </label>
+                                @if (!User.IsInRole("Operacional") && !User.IsInRole("CentroCosto"))
+                                {
+                                    string txtA = User.IsInRole("AlmacenMP") || User.IsInRole("Administrador") ? "Cerradas" : "Impresas";
+                                    string txtB = User.IsInRole("AlmacenMP") || User.IsInRole("Administrador") ? "Sin cerrar" : "Sin imprimir";
+                                    <label class="flex items-center space-x-3 cursor-pointer">
+                                        <input id="pickedUp1" class="w-4 h-4 text-red-primary border-gray-300 rounded focus:ring-red-primary"
+                                               type="checkbox" name="chbxPickedUp" value="1">
+                                        <span class="text-sm text-gray-700">@txtA</span>
+                                    </label>
+                                    <label class="flex items-center space-x-3 cursor-pointer">
+                                        <input id="pickedUp2" class="w-4 h-4 text-red-primary border-gray-300 rounded focus:ring-red-primary"
+                                               type="checkbox" name="chbxPickedUp" value="0">
+                                        <span class="text-sm text-gray-700">@txtB</span>
+                                    </label>
+                                }
+                            </div>
+                        </div>
+
+                        <!-- Date Filter -->
+                        <div class="space-y-3">
+                            <label class="block text-sm font-semibold text-gray-700">Fecha</label>
+                            <div class="grid grid-cols-2 gap-3">
+                                <div class="relative">
+                                    <select id="cmbMonth" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-red-primary focus:border-red-primary appearance-none bg-white text-sm">
                                         <option value="0" selected>Mes</option>
                                         <option value="1">Enero</option>
                                         <option value="2">Febrero</option>
@@ -98,40 +115,56 @@
                                         <option value="11">Noviembre</option>
                                         <option value="12">Diciembre</option>
                                     </select>
+                                    <i class="bi bi-chevron-down absolute right-2 top-1/2 transform -translate-y-1/2 text-gray-400 text-xs"></i>
                                 </div>
-                                <div class="col">
-                                    <select id="cmbYear" class="form-control" asp-items="@ViewBag.Years">
+                                <div class="relative">
+                                    <select id="cmbYear" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-red-primary focus:border-red-primary appearance-none bg-white text-sm" asp-items="@ViewBag.Years">
                                     </select>
+                                    <i class="bi bi-chevron-down absolute right-2 top-1/2 transform -translate-y-1/2 text-gray-400 text-xs"></i>
                                 </div>
                             </div>
                         </div>
-                    </li>
-                    <li class="list-group-item d-flex justify-content-between align-items-start">
-                        <div class="ms-2 me-auto">
-                            <div class="fw-bold">C. C.</div>
-                            <input id="txtCc" type="text" class="form-control">
-                        </div>
-                    </li>
-                    @if (!User.IsInRole("Operacional") && !User.IsInRole("CentroCosto"))
-                    {
-                        <li class="list-group-item d-flex justify-content-between align-items-start">
-                            <div class="ms-2 me-auto">
-                                <div class="fw-bold">Solicitante</div>
-                                <input id="txtUser" type="text" class="form-control">
-                            </div>
-                        </li>
-                    }
-                    <li class="list-group-item d-flex justify-content-between align-items-start">
-                        <div class="ms-2 me-auto">
-                            <div class="fw-bold">Opciones</div>
-                            <div class="d-grid gap-2 d-md-block justify-content-between">
-                                <a class="btn" onclick="ClearFilter()" data-bs-toggle="tooltip" data-bs-placement="top" data-bs-original-title="Eliminar filtros"> <i class="bi bi-x-lg" style="font-size: 24px; color:#ca1f1f; border-color: transparent;"></i></a>
-                                <a class="btn" onclick="GetData(1)" data-bs-toggle="tooltip" data-bs-placement="top" data-bs-original-title="Buscar"> <i class="bi bi-search" style="font-size: 24px; color:#1f9bca; border-color: transparent;"></i></a>
+
+                        <!-- Cost Center Filter -->
+                        <div class="space-y-2">
+                            <label class="block text-sm font-semibold text-gray-700">Centro de Costo</label>
+                            <div class="relative">
+                                <input id="txtCc" type="text"
+                                       class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-red-primary focus:border-red-primary transition-colors pl-10"
+                                       placeholder="Buscar C.C.">
+                                <i class="bi bi-building absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400"></i>
                             </div>
                         </div>
-                    </li>
-                </ol>
-                <br />
+
+                        @if (!User.IsInRole("Operacional") && !User.IsInRole("CentroCosto"))
+                        {
+                            <!-- User Filter -->
+                            <div class="space-y-2">
+                                <label class="block text-sm font-semibold text-gray-700">Solicitante</label>
+                                <div class="relative">
+                                    <input id="txtUser" type="text"
+                                           class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-red-primary focus:border-red-primary transition-colors pl-10"
+                                           placeholder="Nombre del usuario">
+                                    <i class="bi bi-person absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400"></i>
+                                </div>
+                            </div>
+                        }
+
+                        <!-- Action Buttons -->
+                        <div class="space-y-3 pt-4 border-t border-gray-200">
+                            <button class="w-full px-4 py-3 bg-gray-500 text-white rounded-lg hover:bg-gray-600 transition-colors flex items-center justify-center space-x-2"
+                                    onclick="ClearFilter()">
+                                <i class="bi bi-x-lg"></i>
+                                <span>Limpiar filtros</span>
+                            </button>
+                            <button class="w-full px-4 py-3 bg-red-primary text-white rounded-lg hover:bg-red-dark transition-colors flex items-center justify-center space-x-2 shadow-md hover:shadow-lg"
+                                    onclick="GetData(1)">
+                                <i class="bi bi-search"></i>
+                                <span>Buscar</span>
+                            </button>
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
     </div>
@@ -143,9 +176,20 @@
     }
 
     function GetData(page) {
-        $('#partialViewContainer').html('<div class="text-center"><div class="spinner-grow" style="width: 1rem; height: 1rem;" role="status"><span class="visually-hidden">Loading...</span></div>' +
-            '<div class="spinner-grow" style="width: 1rem; height: 1rem;" role="status"><span class="visually-hidden">Loading...</span></div>' +
-            '<div class="spinner-grow" style="width: 1rem; height: 1rem;" role="status"><span class="visually-hidden">Loading...</span></div><h4>Cargando datos...</h4></div>');
+        $('#partialViewContainer').html(`
+            <div class="bg-white rounded-xl border border-gray-200 p-8">
+                <div class="text-center">
+                    <div class="inline-flex items-center space-x-2 text-red-primary">
+                        <div class="animate-spin rounded-full h-8 w-8 border-b-2 border-red-primary"></div>
+                        <div class="animate-spin rounded-full h-6 w-6 border-b-2 border-red-primary"></div>
+                        <div class="animate-spin rounded-full h-4 w-4 border-b-2 border-red-primary"></div>
+                    </div>
+                    <h4 class="text-lg font-semibold text-gray-700 mt-4">Cargando datos...</h4>
+                    <p class="text-gray-500 text-sm">Por favor espere un momento</p>
+                </div>
+            </div>
+        `);
+
         var cmbMonth = document.getElementById("cmbMonth");
         var cmbYear = document.getElementById("cmbYear");
         var canceled = 0;
@@ -193,6 +237,13 @@
             error: function (XMLHttpRequest, textStatus, errorThrown) {
                 console.log("Status: " + textStatus);
                 console.log("Error: " + errorThrown);
+                $("#partialViewContainer").html(`
+                    <div class="bg-white rounded-xl border border-red-200 p-8 text-center">
+                        <i class="bi bi-exclamation-triangle text-red-500 text-4xl mb-4"></i>
+                        <h4 class="text-lg font-semibold text-gray-700">Error al cargar datos</h4>
+                        <p class="text-gray-500 text-sm">Por favor, intente nuevamente</p>
+                    </div>
+                `);
             }
         });
     }
@@ -227,8 +278,8 @@
         document.getElementById("txtVouchNum").value = null;
         if ('@User.IsInRole("Operacional")' == 'False' || '@User.IsInRole("CentroCosto")' == 'False') {
             document.getElementById("txtUser").value = null;
-            document.getElementById("pickedUp1").checked = false;
-            document.getElementById("pickedUp2").checked = false;
+            if(document.getElementById("pickedUp1")) document.getElementById("pickedUp1").checked = false;
+            if(document.getElementById("pickedUp2")) document.getElementById("pickedUp2").checked = false;
         }
         GetData(1);
     }

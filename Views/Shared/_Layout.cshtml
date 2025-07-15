@@ -7,101 +7,176 @@
     <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
     <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
     <link rel="stylesheet" href="~/VoucherCapture.styles.css" asp-append-version="true" />
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        'red-primary': '#dc2626',
+                        'red-secondary': '#ef4444',
+                        'red-light': '#fef2f2',
+                        'red-dark': '#991b1b',
+                    }
+                }
+            }
+        }
+    </script>
 
     @*Adds*@
     <script src="~/lib/jquery/dist/jquery.min.js"></script>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.2/font/bootstrap-icons.css">
     <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
 </head>
-<body style="background-color: #bdc3c7;">
+<body class="bg-gray-50">
     <header>
-        <nav class="navbar bg-body-tertiary" style="background-color: #bdc3c7 !important;">
-            <div class="container-fluid">
-                <div class="row">
-                    <div class="col-auto d-flex align-items-center">
-                        <img src="/Images/logo2.jpg" width="50" height="50" />
+        <!-- Modern header with red gradient -->
+        <nav class="bg-gradient-to-r from-red-primary to-red-secondary shadow-lg fixed w-full top-0 z-50">
+            <div class="container-fluid px-6 py-4">
+                <div class="flex items-center justify-between">
+                    <div class="flex items-center space-x-4">
+                        <div class="bg-white p-2 rounded-lg shadow-md">
+                            <img src="/Images/logo2.jpg" width="50" height="50" class="rounded" />
+                        </div>
+                        <div>
+                            <h1 class="text-white text-2xl font-bold tracking-wide">Sistema de Vales</h1>
+                            <p class="text-red-100 text-sm">Gestión integral de solicitudes</p>
+                        </div>
                     </div>
-                    <div class="col">
-                        <h1 style="color: black;">Sistema de vales</h1>
+                    <div class="flex items-center space-x-3 bg-white bg-opacity-10 border border-white border-opacity-30 px-4 py-2 rounded-lg backdrop-blur-sm">
+                        <i class="bi bi-person-circle text-white text-xl"></i>
+                        <span class="text-white font-medium">@User.Identity.Name</span>
                     </div>
-                </div>
-                <div class="navbar-text">
-                    <i class="bi bi-person-square" style="font-size: 20px"></i>
-                    @User.Identity.Name
                 </div>
             </div>
         </nav>
-        <div class="d-flex flex-column align-items-center align-items-sm-start px-3 pt-2" style="width: 4.5rem; position:fixed;">
-            <ul class="nav nav-pills nav-flush flex-column mb-auto text-center">
-                <li>
-                    <a class="nav-link py-3 border-bottom rounded-0" data-bs-toggle="tooltip" data-bs-placement="right" data-bs-original-title="Todas las solicitudes" asp-action="Index" asp-controller="Voucher">
-                        <i class="bi bi-card-heading" style="font-size: 28px; color: #1a9ada"></i>
+
+        <!-- Modern sidebar -->
+        <div class="fixed left-0 top-24 h-full w-20 bg-white shadow-xl border-r border-gray-200 z-40">
+            <div class="flex flex-col items-center py-6 space-y-4 h-full">
+                <!-- Navigation items -->
+                <div class="group relative">
+                    <a class="flex items-center justify-center w-14 h-14 bg-red-50 hover:bg-red-primary text-red-primary hover:text-white rounded-xl transition-all duration-300 shadow-md hover:shadow-lg transform hover:scale-105"
+                       asp-action="Index" asp-controller="Voucher">
+                        <i class="bi bi-card-heading text-2xl"></i>
                     </a>
-                </li>
-                <li class="nav-item">
+                    <div class="absolute left-20 top-1/2 transform -translate-y-1/2 bg-gray-800 text-white px-3 py-2 rounded-lg text-sm opacity-0 group-hover:opacity-100 transition-opacity duration-300 whitespace-nowrap pointer-events-none">
+                        Todas las solicitudes
+                    </div>
+                </div>
+
+                <!-- Create voucher dropdown -->
+                <div class="group relative">
                     <div class="btn-group dropend">
-                        <button class="nav-link py-3 border-bottom rounded-0" type="button" data-bs-toggle="dropdown" aria-expanded="false">
-                            <i class="bi bi-plus-circle" style="font-size: 28px; color:#09a10d" data-bs-toggle="tooltip" data-bs-placement="right" data-bs-original-title="Crear vale"></i>
-                        </button>  
-                        
-                            <ul class="dropdown-menu">
+                        <button class="flex items-center justify-center w-14 h-14 bg-green-50 hover:bg-green-500 text-green-600 hover:text-white rounded-xl transition-all duration-300 shadow-md hover:shadow-lg transform hover:scale-105"
+                                type="button" data-bs-toggle="dropdown" aria-expanded="false">
+                            <i class="bi bi-plus-circle text-2xl"></i>
+                        </button>
+                        <ul class="dropdown-menu border-0 shadow-lg rounded-xl mt-2">
                             @{
                                 var matPrimaClaim = User.Claims.FirstOrDefault(c => c.Type == "canAccessMateriaPrima");
                                 var canAccessMateriaPrima = matPrimaClaim != null && bool.TryParse(matPrimaClaim.Value, out var result) && result;
                             }
-                            @if(User.IsInRole("Administrador") || User.IsInRole("Almacen") || User.IsInRole("AlmacenMP"))
+                            @if (User.IsInRole("Administrador") || User.IsInRole("Almacen") || User.IsInRole("AlmacenMP"))
                             {
-                                <li><a class="dropdown-item" asp-action="Create" asp-controller="Voucher" asp-route-voucherType="1">Materia prima</a></li>
-                                <li><a class="dropdown-item" asp-action="Create" asp-controller="Voucher" asp-route-voucherType="0">Otro</a></li>
+                                <li>
+                                    <a class="dropdown-item hover:bg-red-50 px-4 py-3 text-gray-700" asp-action="Create" asp-controller="Voucher" asp-route-voucherType="1">
+                                        <i class="bi bi-box-seam text-red-primary me-2"></i>Materia prima
+                                    </a>
+                                </li>
+                                <li>
+                                    <a class="dropdown-item hover:bg-red-50 px-4 py-3 text-gray-700" asp-action="Create" asp-controller="Voucher" asp-route-voucherType="0">
+                                        <i class="bi bi-tools text-red-primary me-2"></i>Otro
+                                    </a>
+                                </li>
                             }
                             else if (User.IsInRole("Operacional") && canAccessMateriaPrima)
                             {
-                                <li><a class="dropdown-item" asp-action="Create" asp-controller="Voucher" asp-route-voucherType="1">Materia prima</a></li>
+                                <li>
+                                    <a class="dropdown-item hover:bg-red-50 px-4 py-3 text-gray-700" asp-action="Create" asp-controller="Voucher" asp-route-voucherType="1">
+                                        <i class="bi bi-box-seam text-red-primary me-2"></i>Materia prima
+                                    </a>
+                                </li>
                             }
                             else
                             {
-                                <li><a class="dropdown-item" asp-action="Create" asp-controller="Voucher" asp-route-voucherType="0">Otro</a></li>
+                                <li>
+                                    <a class="dropdown-item hover:bg-red-50 px-4 py-3 text-gray-700" asp-action="Create" asp-controller="Voucher" asp-route-voucherType="0">
+                                        <i class="bi bi-tools text-red-primary me-2"></i>Otro
+                                    </a>
+                                </li>
                             }
-                            </ul>                        
+                        </ul>
                     </div>
-                </li>
-                @if (User.IsInRole("Administrador") || User.IsInRole("Almacen") || User.IsInRole("AlmacenMP")){
-                <li>
-                   <a class="nav-link py-3 border-bottom rounded-0" data-bs-toggle="tooltip" data-bs-placement="right" data-bs-original-title="Exportar vales" asp-action="Index" asp-controller="Import">
-                        <i class="bi bi-upload" style="font-size: 28px; color: #ff8a14"></i>
-                    </a>
-                </li>
+                    <div class="absolute left-20 top-1/2 transform -translate-y-1/2 bg-gray-800 text-white px-3 py-2 rounded-lg text-sm opacity-0 group-hover:opacity-100 transition-opacity duration-300 whitespace-nowrap pointer-events-none">
+                        Crear vale
+                    </div>
+                </div>
+
+                @if (User.IsInRole("Administrador") || User.IsInRole("Almacen") || User.IsInRole("AlmacenMP"))
+                {
+                    <div class="group relative">
+                        <a class="flex items-center justify-center w-14 h-14 bg-orange-50 hover:bg-orange-500 text-orange-600 hover:text-white rounded-xl transition-all duration-300 shadow-md hover:shadow-lg transform hover:scale-105"
+                           asp-action="Index" asp-controller="Import">
+                            <i class="bi bi-upload text-2xl"></i>
+                        </a>
+                        <div class="absolute left-20 top-1/2 transform -translate-y-1/2 bg-gray-800 text-white px-3 py-2 rounded-lg text-sm opacity-0 group-hover:opacity-100 transition-opacity duration-300 whitespace-nowrap pointer-events-none">
+                            Exportar vales
+                        </div>
+                    </div>
                 }
-                <li>
-                    <a class="nav-link py-3 border-bottom rounded-0" data-bs-toggle="tooltip" data-bs-placement="right" data-bs-original-title="Ver existencias" asp-action="Index" asp-controller="Stock">
-                        <i class="bi bi-boxes" style="font-size: 28px; color:#905d27"></i>
+
+                <div class="group relative">
+                    <a class="flex items-center justify-center w-14 h-14 bg-blue-50 hover:bg-blue-500 text-blue-600 hover:text-white rounded-xl transition-all duration-300 shadow-md hover:shadow-lg transform hover:scale-105"
+                       asp-action="Index" asp-controller="Stock">
+                        <i class="bi bi-boxes text-2xl"></i>
                     </a>
-                </li>
-                <li>
-                    <a class="nav-link py-3 border-bottom rounded-0" data-bs-toggle="tooltip" data-bs-placement="right" data-bs-original-title="Centros de costo" asp-action="Index" asp-controller="CostCenter">
-                        <img src="/Images/costcenter.png" width="28" height="28" />
+                    <div class="absolute left-20 top-1/2 transform -translate-y-1/2 bg-gray-800 text-white px-3 py-2 rounded-lg text-sm opacity-0 group-hover:opacity-100 transition-opacity duration-300 whitespace-nowrap pointer-events-none">
+                        Ver existencias
+                    </div>
+                </div>
+
+                <div class="group relative">
+                    <a class="flex items-center justify-center w-14 h-14 bg-purple-50 hover:bg-purple-500 text-purple-600 hover:text-white rounded-xl transition-all duration-300 shadow-md hover:shadow-lg transform hover:scale-105"
+                       asp-action="Index" asp-controller="CostCenter">
+                        <img src="/Images/costcenter.png" width="28" height="28" class="brightness-0 opacity-60 group-hover:brightness-0 group-hover:invert transition-all duration-300" />
                     </a>
-                </li>
-                @if(User.IsInRole("Administrador") || User.IsInRole("Lectura")){
-                <li>
-                    <a class="nav-link py-3 border-bottom rounded-0" data-bs-toggle="tooltip" data-bs-placement="right" data-bs-original-title="Configuración" asp-action="Index" asp-controller="UserPermission">
-                        <i class="bi bi-gear-wide-connected" style="font-size: 28px; color:dimgray"></i>
-                    </a>
-                </li>
+                    <div class="absolute left-20 top-1/2 transform -translate-y-1/2 bg-gray-800 text-white px-3 py-2 rounded-lg text-sm opacity-0 group-hover:opacity-100 transition-opacity duration-300 whitespace-nowrap pointer-events-none">
+                        Centros de costo
+                    </div>
+                </div>
+
+                @if (User.IsInRole("Administrador") || User.IsInRole("Lectura"))
+                {
+                    <div class="group relative">
+                        <a class="flex items-center justify-center w-14 h-14 bg-gray-100 hover:bg-gray-600 text-gray-600 hover:text-white rounded-xl transition-all duration-300 shadow-md hover:shadow-lg transform hover:scale-105"
+                           asp-action="Index" asp-controller="UserPermission">
+                            <i class="bi bi-gear-wide-connected text-2xl"></i>
+                        </a>
+                        <div class="absolute left-20 top-1/2 transform -translate-y-1/2 bg-gray-800 text-white px-3 py-2 rounded-lg text-sm opacity-0 group-hover:opacity-100 transition-opacity duration-300 whitespace-nowrap pointer-events-none">
+                            Configuración
+                        </div>
+                    </div>
                 }
-            </ul>
-            <div class="d-flex">
-                <a class="d-flex align-items-center justify-content-center p-3 link-body-emphasis text-decoration-none" data-bs-toggle="tooltip" data-bs-placement="right" data-bs-original-title="Cerrar sesión" asp-action="LogOut" asp-controller="Access">
-                    <i class="bi bi-escape" style="font-size: 24px; color:#e11c1c"></i>
-                </a>
+
+                <!-- Logout button at bottom -->
+                <div class="group relative mt-auto">
+                    <a class="flex items-center justify-center w-14 h-14 bg-red-100 hover:bg-red-primary text-red-primary hover:text-white rounded-xl transition-all duration-300 shadow-md hover:shadow-lg transform hover:scale-105"
+                       asp-action="LogOut" asp-controller="Access">
+                        <i class="bi bi-box-arrow-right text-2xl"></i>
+                    </a>
+                    <div class="absolute left-20 top-1/2 transform -translate-y-1/2 bg-gray-800 text-white px-3 py-2 rounded-lg text-sm opacity-0 group-hover:opacity-100 transition-opacity duration-300 whitespace-nowrap pointer-events-none">
+                        Cerrar sesión
+                    </div>
+                </div>
             </div>
         </div>
-
     </header>
-    <div style="margin-left: 4.5rem; background-color:  #f0f3f4;">
-        <div class="container">
-            <main role="main" class="pb-3">
-                <br />
+
+    <!-- Main content area with proper spacing -->
+    <div class="ml-20 pt-24 bg-gray-50 min-h-screen">
+        <div class="container mx-auto px-6 py-8">
+            <main role="main" class="bg-white rounded-2xl shadow-sm border border-gray-200 p-8">
                 @RenderBody()
             </main>
         </div>

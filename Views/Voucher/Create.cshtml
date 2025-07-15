@@ -3,6 +3,7 @@
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
+<<<<<<< HEAD
 <style>
     .custom-dropdown {
         position: relative;
@@ -106,45 +107,161 @@
     <button class="btn btn-outline-success" type="button" id="button-addon2" onclick="AddRow()"><i class="bi bi-plus-lg"></i> Agregar</button>
 </div>
 <div id="msg" style="color:#cb4335; font-size:12px; font-style:italic;"></div>
+=======
+<div class="space-y-8">
+    <!-- Header -->
+    <div class="text-center border-b border-gray-200 pb-6">
+        <h2 class="text-3xl font-bold text-gray-900 mb-2">Crear Vale Nuevo</h2>
+        <p class="text-gray-600">Complete la información para generar una nueva solicitud</p>
+    </div>
 
-<br />
-<table class="table table-primary text-center table-sm align-middle" id="table">
-    <thead>
-        <tr>
-            <th scope="col">Eliminar</th>
-            <th scope="col">Descripción del artículo</th>
-            <th scope="col">Tipo de unidad</th>
-            <th scope="col">Cantidad</th>
-            <th scope="col">Existencia</th>
-        </tr>
-    </thead>
-    <tbody class="table-group-divider">
-    </tbody>
-</table>
-<br />
-<div class="form-check">
-    <input class="form-check-input" type="checkbox" data-bs-toggle="collapse" href="#collapseEmpNumber" id="chbxPickedUp" checked>
-    <label class="form-check-label" for="flexCheckDefault">
-        Recibirá otra persona
-    </label>
-</div>
-<div class="collapse show" id="collapseEmpNumber">
-    <div class="row">
-        <div class="col-auto d-flex align-items-center">
-            <label class="form-label">Recibirá:</label>
+    <div id="Body"></div>
+>>>>>>> ae7a37e58ff6c949d5e259aa039d89a273ec6229
+
+    <!-- Form Container -->
+    <div class="bg-white rounded-xl shadow-lg border border-gray-200 p-8">
+        <!-- Top Controls Row -->
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-8">
+            <!-- Cost Center -->
+            <div class="space-y-2">
+                <label class="block text-sm font-semibold text-gray-700">Centro de Costo:</label>
+                <div class="relative">
+                    <input class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-red-primary focus:border-red-primary transition-colors"
+                           id="txtCc" list="costcenters" placeholder="Seleccione un centro de costo" />
+                    <datalist id="costcenters"></datalist>
+                    <i class="bi bi-building absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400"></i>
+                </div>
+            </div>
+
+            <!-- Group Lines -->
+            <div class="space-y-2">
+                <label class="block text-sm font-semibold text-gray-700">Grupo de líneas:</label>
+                <div class="relative">
+                    <select id="cmbGroupLine" asp-items="@ViewBag.GroupSupplyLines"
+                            class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-red-primary focus:border-red-primary transition-colors appearance-none bg-white"
+                            onchange="FillCmbSupplyLine()">
+                    </select>
+                    <i class="bi bi-chevron-down absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400"></i>
+                </div>
+            </div>
+
+            <!-- Supply Lines -->
+            <div class="space-y-2">
+                <label class="block text-sm font-semibold text-gray-700">Líneas de artículos:</label>
+                <div class="relative">
+                    <select id="cmbSupplyLine"
+                            class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-red-primary focus:border-red-primary transition-colors appearance-none bg-white"
+                            onchange="SupplyList(1)">
+                        <option value="0">-- Seleccionar línea --</option>
+                    </select>
+                    <i class="bi bi-chevron-down absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400"></i>
+                </div>
+            </div>
         </div>
-        <div class="input-group">
-            <button class="btn btn-outline-info" type="button" onclick="GetNameWorker()"><i class="bi bi-search"></i></button>
-            <input type="text" class="form-control" id="txtEmpNumber" placeholder="Ingresar número de ficha">
-            <input type="text" class="form-control" id="txtName" placeholder="Nombre del trabajador" readonly>
-            <button class="btn btn-outline-danger" type="button" onclick="ClearName()"><i class="bi bi-x-lg"></i></button>
+
+        @if (ViewBag.VoucherType == 1)
+        {
+            <!-- Surplus Checkbox -->
+            <div class="mb-6">
+                <div class="bg-yellow-50 border border-yellow-200 rounded-lg p-4">
+                    <label class="flex items-center space-x-3 cursor-pointer">
+                        <input class="w-5 h-5 text-red-primary border-gray-300 rounded focus:ring-red-primary"
+                               type="checkbox" id="chbxSurplus" onchange="Surplus()">
+                        <span class="text-sm font-medium text-gray-700">Marcar como sobrante</span>
+                    </label>
+                </div>
+            </div>
+        }
+
+        <!-- Search and Add Section -->
+        <div class="bg-gray-50 rounded-lg p-6 mb-6">
+            <label class="block text-sm font-semibold text-gray-700 mb-3">Buscar artículos:</label>
+            <div class="flex space-x-3">
+                <div class="flex-1 relative">
+                    <input class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-red-primary focus:border-red-primary transition-colors"
+                           list="supplies" id="txtSupply" placeholder="Buscar por nombre o código...">
+                    <datalist id="supplies"></datalist>
+                    <i class="bi bi-search absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400"></i>
+                </div>
+                <button class="px-6 py-3 bg-red-primary text-white rounded-lg hover:bg-red-dark transition-colors shadow-md hover:shadow-lg flex items-center space-x-2"
+                        type="button" onclick="AddRow()">
+                    <i class="bi bi-plus-lg"></i>
+                    <span class="font-medium">Agregar</span>
+                </button>
+            </div>
+            <div id="msg" class="text-red-600 text-sm mt-2 italic"></div>
+        </div>
+
+        <!-- Items Table -->
+        <div class="bg-white rounded-lg border border-gray-200 overflow-hidden shadow-sm">
+            <div class="bg-red-primary text-white px-6 py-4">
+                <h3 class="text-lg font-semibold">Artículos Seleccionados</h3>
+            </div>
+            <div class="overflow-x-auto">
+                <table class="w-full" id="table">
+                    <thead class="bg-gray-50">
+                        <tr>
+                            <th class="px-6 py-4 text-left text-sm font-semibold text-gray-700">Eliminar</th>
+                            <th class="px-6 py-4 text-left text-sm font-semibold text-gray-700">Descripción del artículo</th>
+                            <th class="px-6 py-4 text-left text-sm font-semibold text-gray-700">Tipo de unidad</th>
+                            <th class="px-6 py-4 text-left text-sm font-semibold text-gray-700">Cantidad</th>
+                            <th class="px-6 py-4 text-left text-sm font-semibold text-gray-700">Existencia</th>
+                        </tr>
+                    </thead>
+                    <tbody class="divide-y divide-gray-200">
+                        <!-- Dynamic rows will be inserted here -->
+                    </tbody>
+                </table>
+                <div class="px-6 py-8 text-center text-gray-500" id="emptyTable">
+                    <i class="bi bi-inbox text-4xl mb-3 block"></i>
+                    <p>No hay artículos agregados</p>
+                    <p class="text-sm">Use el buscador para agregar artículos al vale</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Recipient Section -->
+        <div class="mt-8">
+            <div class="bg-blue-50 border border-blue-200 rounded-lg p-6">
+                <label class="flex items-center space-x-3 cursor-pointer mb-4">
+                    <input class="w-5 h-5 text-red-primary border-gray-300 rounded focus:ring-red-primary"
+                           type="checkbox" id="chbxPickedUp" checked onchange="toggleRecipientSection()">
+                    <span class="text-sm font-semibold text-gray-700">Recibirá otra persona</span>
+                </label>
+                <div id="collapseEmpNumber" class="space-y-3">
+                    <label class="block text-sm font-medium text-gray-700">Información del receptor:</label>
+                    <div class="flex space-x-3">
+                        <button class="px-4 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition-colors"
+                                type="button" onclick="GetNameWorker()">
+                            <i class="bi bi-search"></i>
+                        </button>
+                        <input type="text"
+                               class="flex-1 px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-red-primary focus:border-red-primary transition-colors"
+                               id="txtEmpNumber" placeholder="Número de ficha">
+                        <input type="text"
+                               class="flex-1 px-4 py-2 border border-gray-300 rounded-lg bg-gray-50"
+                               id="txtName" placeholder="Nombre del trabajador" readonly>
+                        <button class="px-4 py-2 bg-red-500 text-white rounded-lg hover:bg-red-600 transition-colors"
+                                type="button" onclick="ClearName()">
+                            <i class="bi bi-x-lg"></i>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Action Buttons -->
+        <div class="flex justify-between items-center mt-8 pt-6 border-t border-gray-200">
+            <a class="px-8 py-3 bg-gray-500 text-white rounded-lg hover:bg-gray-600 transition-colors shadow-md"
+               asp-action="Index" asp-controller="Voucher">
+                <i class="bi bi-arrow-left me-2"></i>Cancelar
+            </a>
+            <button class="px-8 py-3 bg-red-primary text-white rounded-lg hover:bg-red-dark transition-colors shadow-md hover:shadow-lg"
+                    id="btnCreate" onclick="Create()">
+                <i class="bi bi-check-lg me-2"></i>Crear Vale
+            </button>
         </div>
     </div>
-</div>
-<br />
-<div class="gap-2 d-md-flex justify-content-md-end">
-    <a class="btn btn-secondary" style="width: 200px; margin-right: auto;" asp-action="Index" asp-controller="Voucher">Cancelar</a>
-    <a class="btn btn-primary" id="btnCreate" style="width: 200px;" onclick="Create()">Aceptar</a>
 </div>
 
 <script>
@@ -161,7 +278,18 @@
     window.onload = function () {
         CostCenterList();
         SupplyList(1);
+        updateTableVisibility();
     };
+
+    function updateTableVisibility() {
+        const tbody = document.querySelector('#table tbody');
+        const emptyState = document.getElementById('emptyTable');
+        if (tbody.children.length === 0) {
+            emptyState.style.display = 'block';
+        } else {
+            emptyState.style.display = 'none';
+        }
+    }
 
     function Surplus(){
         if (document.getElementById('chbxSurplus').checked){
@@ -175,6 +303,7 @@
             $('#cmbSupplyLine').prop('disabled', false);
             SupplyList(1);
         }
+        updateTableVisibility();
     }
 
     function FillCmbSupplyLine() {
@@ -304,6 +433,7 @@
                     var escapedDescription = data[i].description.replace(/'/g, '&#39;').replace(/"/g, '&#34;');
                     var escapedMicrosipkey = data[i].microsipkey ? data[i].microsipkey.replace(/'/g, '&#39;').replace(/"/g, '&#34;') : '';
 
+<<<<<<< HEAD
                     window.suppliesData.push({
                         id: data[i].idSupply,
                         description: escapedDescription,
@@ -313,6 +443,18 @@
                         unitType: data[i].unitType,
                         idSupplySurplus: data[i].idSupplySurplus
                     });
+=======
+                    s += '<option ' +
+        'data-max="' + data[i].qtyTotal + '" ' +
+        'data-unit="' + data[i].unitType + '" ' +
+        'data-value="' + data[i].idSupply + '" ' +
+        'data-surplus="' + data[i].idSupplySurplus + '" ' +
+        'data-microsipkey="' + escapedMicrosipkey + '" ' +
+        'data-description="' + escapedDescription + '" ' +
+        'value="' + (escapedMicrosipkey ? escapedMicrosipkey + ' - ' : '') + escapedDescription + '">' +
+        '</option>';
+
+>>>>>>> ae7a37e58ff6c949d5e259aa039d89a273ec6229
                 }
                 document.getElementById("suppliesDropdown").innerHTML = '';
                 document.getElementById("suppliesDropdown").style.display = 'none';
@@ -326,6 +468,7 @@
         });
     }
 
+<<<<<<< HEAD
     function filterSupplies(searchTerm) {
         var dropdown = document.getElementById("suppliesDropdown");
         window.filteredSuppliesData = window.suppliesData.filter(function(item) {
@@ -377,10 +520,13 @@
         }
     }
 
+=======
+>>>>>>> ae7a37e58ff6c949d5e259aa039d89a273ec6229
     function AddRow() {
         var inputElement = document.getElementById('txtSupply');
         var selectedValue = inputElement.value;
 
+<<<<<<< HEAD
         var selectedItem = null;
 
         if (window.selectedSupplyIndex >= 0 && window.filteredSuppliesData && window.filteredSuppliesData.length > 0) {
@@ -390,6 +536,11 @@
                 return item.displayValue.trim().toLowerCase() === selectedValue.trim().toLowerCase();
             });
         }
+=======
+        var selectedOption = Array.from(datalistElement.options).find(option =>
+            option.value.trim().toLowerCase() === selectedValue.trim().toLowerCase()
+        );
+>>>>>>> ae7a37e58ff6c949d5e259aa039d89a273ec6229
 
         if (!selectedItem) {
             inputElement.value = null;
@@ -415,21 +566,37 @@
                 document.getElementById("msg").innerHTML = '*Este artículo ya está agregado';
                 document.getElementById("suppliesDropdown").style.display = 'none';
             } else {
-                var newRow = '<tr id="row' + dataValue + '"><td> <a class="btn" onclick="RemoveRow(' + dataValue + ')"> <i class="bi bi-x-square" style="font-size: 24px; color:#ca1f1f; border-color: transparent;"></i></a>' +
-                    '</td><td>' + productDescription + '</td>' + '<td>' + dataUnit + '</td><td><input class="form-control" type="number" min="1" max="' + dataMax + '" name="txtQty" step="0.001" data-id="' + dataValue +
-                    '" data-surplus="' + dataSurplus + '" value="1" /></td>' +
-                    '<td>'+ dataMax +'</td></tr>';
+                var newRow = '<tr id="row' + dataValue + '" class="hover:bg-gray-50 transition-colors">' +
+                    '<td class="px-6 py-4">' +
+                    '<button class="text-red-500 hover:text-red-700 transition-colors" onclick="RemoveRow(' + dataValue + ')">' +
+                    '<i class="bi bi-x-square text-xl"></i>' +
+                    '</button>' +
+                    '</td>' +
+                    '<td class="px-6 py-4 text-sm text-gray-900">' + productDescription + '</td>' +
+                    '<td class="px-6 py-4 text-sm text-gray-700">' + dataUnit + '</td>' +
+                    '<td class="px-6 py-4">' +
+                    '<input class="w-24 px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-red-primary focus:border-red-primary text-center" ' +
+                    'type="number" min="1" max="' + dataMax + '" name="txtQty" step="0.001" data-id="' + dataValue + '" ' +
+                    'data-surplus="' + dataSurplus + '" value="1" />' +
+                    '</td>' +
+                    '<td class="px-6 py-4 text-sm text-gray-700 font-medium">' + dataMax + '</td>' +
+                    '</tr>';
                 $('#table tbody').append(newRow);
                 inputElement.value = null;
                 document.getElementById("msg").innerHTML = '';
+<<<<<<< HEAD
                 document.getElementById("suppliesDropdown").style.display = 'none';
                 window.selectedSupplyIndex = -1;
+=======
+                updateTableVisibility();
+>>>>>>> ae7a37e58ff6c949d5e259aa039d89a273ec6229
             }
         }
     }
 
     function RemoveRow(idSupply) {
         $('#row' + idSupply).remove();
+        updateTableVisibility();
     }
 
     function Create() {
@@ -482,7 +649,17 @@
                 inputElement.value = null;
                 document.getElementById("msg").innerHTML = '*Este centro de costo no existe, favor de seleccionar uno de los que se muestran en la lista';
             } else {
+<<<<<<< HEAD
                 cc = selectedCostCenter.id;
+=======
+                cc = selectedOption.getAttribute('data-id');
+
+                // Disable button and show loading state
+                var btnCreate = document.getElementById('btnCreate');
+                btnCreate.disabled = true;
+                btnCreate.innerHTML = '<span class="inline-block animate-spin rounded-full h-4 w-4 border-b-2 border-white mr-2"></span>Creando...';
+
+>>>>>>> ae7a37e58ff6c949d5e259aa039d89a273ec6229
                 $.ajax({
                     url: '/Voucher/Create',
                     method: "post",
@@ -495,13 +672,15 @@
                         if (data.idVoucher > 0){
                             window.location.href = data.redirectUrl;
                         } else {
-                            $('#btnCreate').removeClass('disabled');
+                            btnCreate.disabled = false;
+                            btnCreate.innerHTML = '<i class="bi bi-check-lg me-2"></i>Crear Vale';
                         }
-
                     },
                     error: function (XMLHttpRequest, textStatus, errorThrown) {
                         console.log("Status: " + textStatus);
                         console.log("Error: " + errorThrown);
+                        btnCreate.disabled = false;
+                        btnCreate.innerHTML = '<i class="bi bi-check-lg me-2"></i>Crear Vale';
                     }
                 });
             }
@@ -565,16 +744,30 @@
             GetNameWorker();
         }
         if ($("#txtEmpNumber").val().length > 0 && ($("#txtName").val().length == 0 || $("#txtName").val() == "Número de empleado incorrecto o no existe")) {
-            $('#btnCreate').addClass('disabled');
+            $('#btnCreate').addClass('opacity-50 pointer-events-none');
         } else {
-            $('#btnCreate').removeClass('disabled');
+            $('#btnCreate').removeClass('opacity-50 pointer-events-none');
         }
     });
 
     function ClearName() {
         document.getElementById("txtEmpNumber").value = null;
         document.getElementById("txtName").value = null;
-        $('#btnCreate').removeClass('disabled');
+        $('#btnCreate').removeClass('opacity-50 pointer-events-none');
+    }
+
+    function toggleRecipientSection() {
+        const checkbox = document.getElementById('chbxPickedUp');
+        const section = document.getElementById('collapseEmpNumber');
+
+        if (checkbox.checked) {
+            section.style.display = 'block';
+        } else {
+            section.style.display = 'none';
+            // Clear fields when hidden
+            document.getElementById("txtEmpNumber").value = '';
+            document.getElementById("txtName").value = '';
+        }
     }
 
     function GetNameWorker() {
@@ -587,7 +780,7 @@
                 $('#txtName').val(data);
                 $('#txtName').focus();
                 if ($("#txtName").val() != "Número de empleado incorrecto o no existe") {
-                    $('#btnCreate').removeClass('disabled');
+                    $('#btnCreate').removeClass('opacity-50 pointer-events-none');
                 }
             },
             error: function (XMLHttpRequest, textStatus, errorThrown) {
