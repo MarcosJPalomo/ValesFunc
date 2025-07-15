@@ -5,7 +5,6 @@ var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 builder.Services.AddControllersWithViews();
-
 builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
     .AddCookie(option =>
     {
@@ -14,7 +13,8 @@ builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationSc
         option.AccessDeniedPath = "/Home/Privacy";
     });
 
-builder.WebHost.UseUrls("http://0.0.0.0:5187", "https://0.0.0.0:7190");
+// REMOVER esta línea para IIS - IIS maneja las URLs
+// builder.WebHost.UseUrls("http://0.0.0.0:5187", "https://0.0.0.0:7190");
 
 var app = builder.Build();
 
@@ -22,10 +22,13 @@ var app = builder.Build();
 if (!app.Environment.IsDevelopment())
 {
     app.UseExceptionHandler("/Home/Error");
-    app.UseHsts();
+    // REMOVER UseHsts() también para evitar problemas de HTTPS
+    // app.UseHsts();
 }
 
-app.UseHttpsRedirection();
+// REMOVER si existe - IIS maneja la redirección HTTPS
+// app.UseHttpsRedirection();
+
 app.UseStaticFiles();
 app.UseRouting();
 app.UseAuthentication();
